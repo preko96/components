@@ -4,7 +4,11 @@ import { withProvider } from "../../hocs/withContext";
 import useFocus from "../../hooks/useFocus";
 import useHover from "../../hooks/useHover";
 import SharedStyle from "./shared";
-import { BackgroundVariation } from "../variations";
+import {
+  DarkenBackgroundVariation,
+  GhostBackgroundVariation,
+  BackgroundVariation
+} from "../variations";
 
 const Base = styled.div``;
 
@@ -115,12 +119,14 @@ function Select({ options, ...props }) {
   );
 }
 
-const StyledButton = styled.div`
+const StyledButton = styled.button`
   ${SharedStyle}
   ${BackgroundVariation}
+  ${props => props.hovered && DarkenBackgroundVariation(props)};
+  ${props => props.focused && GhostBackgroundVariation(props)};
+  outline: none;
+  border: 0;
   user-select: none;
-  border-color: #dbdbdb;
-  border-width: 1px;
   cursor: pointer;
   justify-content: center;
   padding-bottom: calc(0.375em - 1px);
@@ -133,7 +139,8 @@ const StyledButton = styled.div`
 
 function Button(props) {
   const hover = useHover();
-  return <StyledButton {...hover} {...props} />;
+  const focus = useFocus();
+  return <StyledButton {...hover} {...focus} {...props} />;
 }
 
 class Form extends React.Component {

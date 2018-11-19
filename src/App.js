@@ -6,7 +6,7 @@ export default function App() {
     <Form>
       <Form.Field>
         <Form.Control>
-          <Form.Button background="info">
+          <Form.Button background="dark">
             <Text>Hello</Text>
           </Form.Button>
         </Form.Control>

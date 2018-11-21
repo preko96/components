@@ -8,7 +8,7 @@ function modify(object, func) {
   }, {});
 }
 
-const backgroundColors = {
+const standard = {
   primary: Color("#00d1b2"),
   info: Color("#209cee"),
   success: Color("#23d160"),
@@ -18,7 +18,7 @@ const backgroundColors = {
   dark: Color("#363636")
 };
 
-const textColors = {
+const pair = {
   primary: Color("rgba(255,255,255,.9)"),
   info: Color("rgba(255,255,255,.9)"),
   success: Color("rgba(255,255,255,.9)"),
@@ -33,13 +33,13 @@ const lighten = value => value.lighten(0.1);
 const ghost = value => value.alpha(0.25);
 
 export default {
-  background: modify(backgroundColors),
-  darkenBackground: modify(backgroundColors, darken),
-  lightenBackground: modify(backgroundColors, lighten),
-  ghostBackground: modify(backgroundColors, ghost),
+  standard: modify(standard),
+  standardDark: modify(standard, darken),
+  standardLight: modify(standard, lighten),
+  standardGhost: modify(standard, ghost),
 
-  text: modify(textColors),
-  darkenText: modify(textColors, darken),
-  lightenText: modify(textColors, lighten),
-  ghostText: modify(textColors, ghost)
+  pair: modify(pair),
+  pairDark: modify(pair, darken),
+  pairLight: modify(pair, lighten),
+  pairGhost: modify(pair, ghost)
 };

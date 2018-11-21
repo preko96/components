@@ -6,22 +6,13 @@ const pipe = (...fns) => arg => fns.reduce((prev, fn) => fn(prev), arg);
 
 function Variation({ property, path, name, prefix, affix, pseudo, effect }) {
   return function(props) {
-    // find out if we really got the variations we looks for.
-    // either in the context or the props
     const variation = props.context[property] || props[property];
     if (!variation) return null;
 
-    // find the right theme by...
     prefix = prefix || "";
     affix = affix || "";
     const lookUpBy = path || property || name;
 
-    /*
-        e.g: theme['text']: {
-            dark: 'black',
-            light: 'white
-        }
-    */
     const theme = props.theme[lookUpBy];
 
     /* e.g: theme['text']['dark'] */

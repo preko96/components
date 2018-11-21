@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { Fragment } from "react";
 import styled from "styled-components";
-import { withProvider } from "../../hocs/withContext";
+import { withProvider, withConsumer } from "../../hocs/withContext";
 import useFocus from "../../hooks/useFocus";
 import useHover from "../../hooks/useHover";
 import SharedStyle from "./shared";
 import {
   DarkenBackgroundVariation,
-  GhostBackgroundVariation,
-  BackgroundVariation
+  GhostBoxShadow,
+  BackgroundVariation,
+  BorderVariation,
+  SelectionVariation
 } from "../variations";
 
 const Base = styled.div``;
@@ -37,15 +39,74 @@ const Control = styled.div`
   text-align: left;
 `;
 
-const Input = styled.input`
+const StyledInput = styled.input`
   ${SharedStyle}
+  ${BorderVariation};
+  ${SelectionVariation};
+  ${props => props.focused && GhostBoxShadow(props)};
+
+  cursor: ${props => props.disabled && "not-allowed"};
+  border-radius: ${props => props.small && "2px"};
+  font-size: ${props => props.small && ".75rem"};
+  font-size: ${props => props.medium && "1.25rem"};
+  font-size: ${props => props.large && "1.5rem"};
+
+  border-radius: ${props => props.rounded && "290486px"};
+  padding-left: ${props => props.rounded && "1em"};
+  padding-right: ${props => props.rounded && "1em"};
+
+  padding-left: ${props => props.hasIconLeft && "2.25em"};
+  padding-left: ${props => props.hasIconRight && "2.25em"};
+
+  border-width: 1px;
+  border-style: solid;
+  outline: none;
   background-color: #fff;
-  border-color: #dbdbdb;
   color: #363636;
-  box-shadow: inset 0 1px 2px rgba(10, 10, 10, 0.1);
   max-width: 100%;
   width: 100%;
 `;
+
+const Loading = withConsumer(styled.div`
+  ${BorderVariation};
+  ${props =>
+    props.loading &&
+    `
+    @keyframes example {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    animation: example 0.5s infinite linear;
+  `}
+  border-width: 2px;
+  border-style: solid;
+  border-radius: 290486px;
+  border-right-color: transparent;
+  border-top-color: transparent;
+  content: "";
+  display: block;
+  height: 1em;
+  width: 1em;
+  position: absolute !important;
+  right: 0.625em;
+  top: 0.625em;
+  z-index: 4;
+`);
+
+function Input(props) {
+  const hover = useHover();
+  const focus = useFocus();
+  return (
+    <Fragment>
+      <StyledInput {...hover} {...focus} {...props} />
+      {props.loading && <Loading {...props} />}
+    </Fragment>
+  );
+}
 
 const SelectContainer = styled.div`
   display: inline-block;
@@ -123,7 +184,7 @@ const StyledButton = styled.button`
   ${SharedStyle}
   ${BackgroundVariation}
   ${props => props.hovered && DarkenBackgroundVariation(props)};
-  ${props => props.focused && GhostBackgroundVariation(props)};
+  ${props => props.focused && GhostBoxShadow(props)};
   outline: none;
   border: 0;
   user-select: none;
@@ -149,7 +210,7 @@ class Form extends React.Component {
   static Label = Label;
   static Help = Help;
   static Control = Control;
-  static Input = Input;
+  static Input = withConsumer(Input);
   static Select = Select;
   static Button = withProvider(Button);
 

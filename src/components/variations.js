@@ -4,7 +4,7 @@ const pipe = (...fns) => arg => fns.reduce((prev, fn) => fn(prev), arg);
 // name => the style we want to set
 // path => the theme path we look up
 
-function Variation({ property, path, name, prefix, affix }) {
+function Variation({ property, path, name, prefix, affix, pseudo, effect }) {
   return function(props) {
     // find out if we really got the variations we looks for.
     // either in the context or the props
@@ -27,7 +27,17 @@ function Variation({ property, path, name, prefix, affix }) {
     /* e.g: theme['text']['dark'] */
     const themeVariation = theme[variation];
     const assignTo = name || property;
-    return `${assignTo}: ${prefix}${themeVariation}${affix};`;
+
+    if (pseudo)
+      return `${pseudo} {
+        ${assignTo}: ${prefix}${themeVariation}${affix};
+        ${effect && effect(props)};
+      }`;
+
+    return `
+      ${assignTo}: ${prefix}${themeVariation}${affix};
+      ${effect && effect(props)};
+    `;
   };
 }
 
@@ -43,7 +53,13 @@ export const LighenBackgroundVariation = pipe(Variation)({
   property: "background",
   path: "lightlenBackground"
 });
-export const GhostBackgroundVariation = pipe(Variation)({
+
+export const BorderVariation = pipe(Variation)({
+  property: "background",
+  name: "border-color"
+});
+
+export const GhostBoxShadow = pipe(Variation)({
   property: "background",
   path: "ghostBackground",
   name: "box-shadow",
@@ -55,6 +71,7 @@ export const TextVariation = pipe(Variation)({
   path: "text",
   name: "color"
 });
+
 export const DarkenTextVariation = pipe(Variation)({
   property: "background",
   path: "darkenText",
@@ -71,4 +88,10 @@ export const GhostTextVariation = pipe(Variation)({
   path: "ghostText",
   name: "box-shadow",
   prefix: "0 0 0 0.125em "
+});
+
+export const SelectionVariation = pipe(Variation)({
+  property: "background",
+  pseudo: "&::selection",
+  effect: TextVariation
 });
